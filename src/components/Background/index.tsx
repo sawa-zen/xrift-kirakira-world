@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { BackSide, Color } from 'three'
+import { BackSide, Color, LinearSRGBColorSpace } from 'three'
 // @ts-expect-error - Vite handles GLSL imports
 import fragmentShader from './fragment.glsl?raw'
 // @ts-expect-error - Vite handles GLSL imports
@@ -21,23 +21,23 @@ export const Background: React.FC<BackgroundProps> = ({
   const uniforms = useMemo(
     () => ({
       uColor1: {
-        value: new Color(color1),
+        value: new Color().setHex(color1, LinearSRGBColorSpace),
       },
       uColor2: {
-        value: new Color(color2),
+        value: new Color().setHex(color2, LinearSRGBColorSpace),
       },
       uColor3: {
-        value: new Color(color3),
+        value: new Color().setHex(color3, LinearSRGBColorSpace),
       },
       uColor4: {
-        value: new Color(color4),
+        value: new Color().setHex(color4, LinearSRGBColorSpace),
       },
     }),
     [color1, color2, color3, color4]
   )
 
   return (
-    <mesh rotation={[Math.PI / 2, 0, Math.PI / 2]} scale={[3, 15, 3]}>
+    <mesh rotation={[0, Math.PI / 2, Math.PI / 2]} scale={[3, 15, 3]}>
       <sphereGeometry args={[15, 32, 8]} />
       <shaderMaterial
         vertexShader={vertexShader}

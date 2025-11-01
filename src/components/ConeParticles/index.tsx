@@ -7,6 +7,8 @@ import fragmentShader from './fragment.glsl?raw'
 import vertexShader from './vertex.glsl?raw'
 
 interface ConeParticlesProps {
+  position?: [number, number, number]
+  scale?: [number, number, number]
   baseColor?: number
   streamSpeed?: number
   noiseStrength?: number
@@ -17,6 +19,8 @@ interface ConeParticlesProps {
 }
 
 export const ConeParticles: React.FC<ConeParticlesProps> = ({
+  position = [0, 0, 0],
+  scale = [1, 1, 1],
   baseColor = 0xffffff,
   streamSpeed = 1,
   noiseStrength = 0.5,
@@ -54,7 +58,7 @@ export const ConeParticles: React.FC<ConeParticlesProps> = ({
   })
 
   return (
-    <group ref={groupRef}>
+    <group ref={groupRef} position={position} scale={scale}>
       <mesh>
         <coneGeometry args={[10, 50, 32, 10, true]} />
         <shaderMaterial

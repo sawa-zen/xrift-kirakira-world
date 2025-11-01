@@ -32,12 +32,12 @@ export const World: React.FC<WorldProps> = ({
       {theme.cones.map((cone, index) => (
         <ConeParticles
           key={index}
+          position={cone.position as [number, number, number]}
+          scale={cone.scale as [number, number, number]}
           baseColor={cone.color}
           streamSpeed={cone.streamSpeed}
           noiseStrength={cone.noiseStrength}
           rotatingSpeed={cone.rotatingSpeed}
-          uvScaleX={cone.scale}
-          uvScaleY={cone.scale}
           gaussian={cone.gaussian}
         />
       ))}
