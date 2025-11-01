@@ -37,7 +37,7 @@ export const Background: React.FC<BackgroundProps> = ({
   )
 
   return (
-    <mesh rotation={[0, Math.PI / 2, Math.PI / 2]} scale={[3, 15, 3]}>
+    <mesh rotation={[0, Math.PI / 2, Math.PI / 2]} scale={[3, 16, 3]}>
       <sphereGeometry args={[15, 32, 8]} />
       <shaderMaterial
         vertexShader={vertexShader}

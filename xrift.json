@@ -1,5 +1,9 @@
 {
   "world": {
-    "distDir": "./dist"
+    "distDir": "./dist",
+    "buildCommand": "npm run build",
+    "title": "マチュのキラキラ",
+    "description": "ジークアクスのマチュのキラキラを再現したワールドです。",
+    "thumbnailPath": "thumbnail.png"
   }
 }
