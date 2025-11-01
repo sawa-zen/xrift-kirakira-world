@@ -1,6 +1,6 @@
 import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
-import { AdditiveBlending, BackSide, Color, Group, Mesh, ShaderMaterial } from 'three'
+import { AdditiveBlending, BackSide, Blending, Color, Group, Mesh, NormalBlending, ShaderMaterial } from 'three'
 // @ts-expect-error - Vite handles GLSL imports
 import fragmentShader from './fragment.glsl?raw'
 // @ts-expect-error - Vite handles GLSL imports
@@ -16,6 +16,9 @@ interface ConeParticlesProps {
   gaussian?: boolean
   uvScaleX?: number
   uvScaleY?: number
+  blending?: number
+  startY?: number
+  endY?: number
 }
 
 export const ConeParticles: React.FC<ConeParticlesProps> = ({
@@ -28,9 +31,14 @@ export const ConeParticles: React.FC<ConeParticlesProps> = ({
   gaussian = false,
   uvScaleX = 30.0,
   uvScaleY = 25.0,
+  blending = 2,
+  startY = 0.3,
+  endY = 0.7,
 }) => {
   const groupRef = useRef<Group>(null)
   const meshRef = useRef<Mesh>(null)
+
+  const blendingMode: Blending = blending === 1 ? NormalBlending : AdditiveBlending
 
   const uniforms = useMemo(
     () => ({
@@ -38,13 +46,13 @@ export const ConeParticles: React.FC<ConeParticlesProps> = ({
       uStreamSpeed: { value: streamSpeed },
       uBaseColor: { value: new Color(baseColor) },
       uNoiseStrength: { value: noiseStrength },
-      uStartY: { value: 0.3 },
-      uEndY: { value: 0.7 },
+      uStartY: { value: startY },
+      uEndY: { value: endY },
       uUvScaleX: { value: uvScaleX },
       uUvScaleY: { value: uvScaleY },
       uGaussian: { value: gaussian ? 1 : 0 },
     }),
-    [baseColor, streamSpeed, noiseStrength, gaussian, uvScaleX, uvScaleY]
+    [baseColor, streamSpeed, noiseStrength, gaussian, uvScaleX, uvScaleY, startY, endY]
   )
 
   // アニメーション: 時間を更新し、グループを回転
@@ -66,7 +74,7 @@ export const ConeParticles: React.FC<ConeParticlesProps> = ({
           fragmentShader={fragmentShader}
           uniforms={uniforms}
           transparent
-          blending={AdditiveBlending}
+          blending={blendingMode}
           side={BackSide}
           depthWrite={false}
           depthTest={false}
