@@ -1,161 +1,56 @@
-# XRift World Template
+# キラキラ - XRift World
 
-XRiftで動作するWebXRワールドを作成するための公式テンプレートです。
+機動戦士ガンダム ジークアクスに登場する「キラキラ」を再現したXRiftワールドです。
 
 ## 概要
 
-このテンプレートは、XRift CLI (`npx @xrift/cli create`) で新しいワールドプロジェクトを作成する際に使用されます。React Three Fiber、Rapier物理エンジン、Three.jsを使用した3Dワールドの基本構成がセットアップ済みで、すぐに開発を始められます。
+「キラキラ」は、ニュータイプが見る幻想的な光の空間です。このワールドでは、カラフルなグラデーション背景、流れるドットパーティクル、輝くスパークパーティクル、そして8層の回転する光のコーン（円錐）が複雑に重なり合い、神秘的な視覚体験を創り出します。
 
-## このテンプレートに含まれる機能
+元となったエフェクト実装: [sawa-zen/portfolio/newtype](https://github.com/sawa-zen/portfolio/tree/main/newtype)
 
-- **React Three Fiber**: Reactコンポーネントとして3Dシーンを構築
-- **Rapier物理エンジン**: リアルな物理演算（衝突判定、重力など）
-- **Three.js**: WebGLベースの3Dグラフィックス
-- **Module Federation**: XRiftプラットフォームでの動的読み込み対応
-- **TypeScript**: 型安全な開発環境
-- **サンプルワールド**: 物理演算やオブジェクト配置の実装例
+## 特徴
 
-### サンプルワールドの内容
+### パーティクルエフェクト
 
-- 20m × 20mの閉じた空間
-- 物理演算対応（壁、地面との衝突判定）
-- 段差テスト用オブジェクト（0.1m, 0.2m, 0.3m, 0.5m）
-- 階段構造
-- 狭い隙間テスト
-- 鏡（Reflector使用）
-- アニメーション実装例（回転するオブジェクト）
+- **Background**: 4色のグラデーション背景（黄色→ピンク→ティール→ダークブルー）
+- **DotParticles**: 奥から手前に流れる無数のドットパーティクル
+- **SparkParticles**: 明滅するスパークエフェクト（テクスチャベース）
+- **ConeParticles**: 8層の光の円錐レイヤー
+  - 各層が異なる色、速度、ノイズ強度で回転
+  - カスタムシェーダーによる流れるパターン
+  - AdditiveBlending/NormalBlendingの組み合わせ
 
-## 使い方
+### テーマ
 
-### 1. 新しいワールドプロジェクトを作成
+現在実装されているテーマ:
+- **machu**: 元のNewtypeエフェクトの配色を忠実に再現
+- **nyaan**: 別カラーバリエーション（参考実装）
+
+## 技術スタック
+
+- **React Three Fiber**: 3Dシーンのコンポーネント化
+- **Three.js**: WebGLレンダリング
+- **カスタムGLSLシェーダー**: パーティクルエフェクトの実装
+- **Rapier物理エンジン**: 透明な床による歩行機能
+- **XRift**: WebXRプラットフォーム対応
+
+## 開発
+
+### セットアップ
 
 ```bash
-npx @xrift/cli create my-world
+npm install
 ```
 
-このコマンドで、このテンプレートを基にした新しいプロジェクトが作成されます。
-
-### 2. 開発サーバーを起動
+### 開発サーバー起動
 
 ```bash
-cd my-world
-npm install
 npm run dev
 ```
 
-### 3. カスタマイズ
+http://localhost:5173 でローカル環境で確認できます。
 
-- `src/World.tsx`: メインのワールドコンポーネント
-- `src/components/`: 各種3Dオブジェクトのコンポーネント
-- `vite.config.ts`: ビルド設定
-- `package.json`: プロジェクト情報
-
-詳細なカスタマイズ方法は [TEMPLATE.md](./TEMPLATE.md) を参照してください。
-
-#### アセット（GLTFモデル、テクスチャ）の読み込み
-
-XRiftでは、ワールドのアセットは自動的にCDNにアップロードされ、適切なベースURLが注入されます。アセットを読み込む際は、`@xrift/world-components`パッケージの`useXRift`フックを使用してベースURLを取得してください。
-
-```typescript
-import { useXRift } from '@xrift/world-components'
-import { useGLTF, useTexture } from '@react-three/drei'
-
-function MyModel() {
-  const { baseUrl } = useXRift()
-
-  // ベースURLと相対パスを結合してGLTFモデルを読み込む
-  const gltf = useGLTF(`${baseUrl}models/robot.gltf`)
-
-  return <primitive object={gltf.scene} />
-}
-
-function MyMaterial() {
-  const { baseUrl } = useXRift()
-
-  // テクスチャを読み込む
-  const texture = useTexture(`${baseUrl}textures/albedo.png`)
-
-  return <meshStandardMaterial map={texture} />
-}
-
-function MyPBRMaterial() {
-  const { baseUrl } = useXRift()
-
-  // 複数のテクスチャを同時に読み込む
-  const [albedo, normal, roughness] = useTexture([
-    `${baseUrl}textures/albedo.png`,
-    `${baseUrl}textures/normal.png`,
-    `${baseUrl}textures/roughness.png`,
-  ])
-
-  return (
-    <meshStandardMaterial
-      map={albedo}
-      normalMap={normal}
-      roughnessMap={roughness}
-    />
-  )
-}
-```
-
-**重要**: アセットパスを指定する際は、必ず`useXRift()`で取得した`baseUrl`を使用してください。これにより、XRiftプラットフォーム上で正しくアセットが読み込まれます。
-
-##### アセットファイルの配置
-
-アセットファイル（GLBモデル、テクスチャ画像など）は`public/`ディレクトリに配置してください。
-
-```
-your-world-project/
-├── public/
-│   ├── models/
-│   │   └── robot.glb
-│   ├── textures/
-│   │   ├── albedo.png
-│   │   ├── normal.png
-│   │   └── roughness.png
-│   └── skybox.jpg
-├── src/
-│   └── World.tsx
-└── package.json
-```
-
-`public/`内のファイルは、ビルド時に自動的にCDNにアップロードされ、`baseUrl`経由でアクセスできるようになります。
-
-##### ローカル開発環境での設定
-
-ローカルで開発する際は、`@xrift/world-components`の`XRiftProvider`を使用してベースURLを設定してください。
-
-```typescript
-// src/dev.tsx（開発用エントリーポイント）
-import { XRiftProvider } from '@xrift/world-components'
-import { World } from './World'
-
-function App() {
-  return (
-    <XRiftProvider baseUrl="/public/">
-      <Canvas>
-        <Physics>
-          <World />
-        </Physics>
-      </Canvas>
-    </XRiftProvider>
-  )
-}
-```
-
-本番環境（XRiftプラットフォーム上）では、フロントエンド側が自動的に`XRiftProvider`でワールドコンポーネントをラップするため、ワールド側で`XRiftProvider`を使用する必要はありません。
-
-## .xriftディレクトリについて
-
-`.xrift/`ディレクトリには、ワールドの設定情報（ワールドIDなど）がローカル環境固有の情報として保存されます。このディレクトリは`.gitignore`に含まれており、リポジトリにコミットされません。
-
-```.xrift/
-└── world.json  # ワールドID、名前などの情報
-```
-
-このファイルは、XRift CLIでワールドをデプロイする際に自動的に作成・更新されます。開発者が手動で編集する必要はありません。
-
-### 4. ビルド
+### ビルド
 
 ```bash
 npm run build
@@ -163,41 +58,94 @@ npm run build
 
 Module Federation形式でビルドされ、XRiftプラットフォームで読み込み可能な形式で `dist/` に出力されます。
 
-## 開発コマンド
+### TypeScript型チェック
 
 ```bash
-# 開発サーバー起動（ホットリロード有効）
-npm run dev
-
-# プロダクションビルド
-npm run build
-
-# ビルド結果のプレビュー
-npm run preview
-
-# TypeScript型チェック
 npm run typecheck
 ```
 
-## 技術スタック
+## プロジェクト構造
 
-- **React**: 19.x
-- **Three.js**: 0.176.x
-- **@react-three/fiber**: 9.3.x
-- **@react-three/rapier**: 2.1.x（物理エンジン）
-- **@react-three/drei**: 10.7.x（Three.js用ヘルパー）
-- **TypeScript**: 5.x
-- **Vite**: 6.x（ビルドツール）
+```
+kirakira/
+├── public/
+│   └── spark.png              # スパークパーティクル用テクスチャ
+├── src/
+│   ├── components/
+│   │   ├── Background/        # グラデーション背景
+│   │   │   ├── index.tsx
+│   │   │   ├── vertex.glsl
+│   │   │   └── fragment.glsl
+│   │   ├── DotParticles/      # ドットパーティクル
+│   │   │   ├── index.tsx
+│   │   │   ├── vertex.glsl
+│   │   │   └── fragment.glsl
+│   │   ├── SparkParticles/    # スパークパーティクル
+│   │   │   ├── index.tsx
+│   │   │   ├── vertex.glsl
+│   │   │   └── fragment.glsl
+│   │   └── ConeParticles/     # 光の円錐レイヤー
+│   │       ├── index.tsx
+│   │       ├── vertex.glsl
+│   │       └── fragment.glsl
+│   ├── World.tsx              # メインワールドコンポーネント
+│   ├── constants.ts           # カラーテーマ定義
+│   ├── dev.tsx                # 開発用エントリーポイント
+│   └── index.tsx              # 本番用エクスポート
+└── package.json
+```
 
-## ワールドの公開
+## カスタマイズ
 
-XRiftプラットフォームでワールドを公開する方法については、[XRift公式ドキュメント](https://github.com/WebXR-JP/xrift-cli)を参照してください。
+### テーマの切り替え
 
-## サポート
+`src/World.tsx` でテーマを変更できます：
 
-- Issues: [GitHub Issues](https://github.com/WebXR-JP/xrift-world-template/issues)
-- XRift CLI: [xrift-cli repository](https://github.com/WebXR-JP/xrift-cli)
+```typescript
+<World newtypeTheme="machu" />  // デフォルト
+<World newtypeTheme="nyaan" />  // 別カラー
+```
+
+### 新しいテーマの追加
+
+`src/constants.ts` の `NEWTYPE_THEMES` に新しいテーマを追加できます：
+
+```typescript
+export const NEWTYPE_THEMES = {
+  machu: { /* ... */ },
+  nyaan: { /* ... */ },
+  yourTheme: {
+    background: {
+      color1: 0xFFFFFF,  // 最下部
+      color2: 0xCCCCCC,
+      color3: 0x888888,
+      color4: 0x000000,  // 最上部
+    },
+    spark: 0xFFFFFF,
+    cones: [
+      // 8層の設定...
+    ],
+  },
+}
+```
+
+### パラメータ調整
+
+各ConeParticlesレイヤーは以下のパラメータで調整可能：
+- `color`: レイヤーの色
+- `position`, `scale`: 位置とスケール
+- `streamSpeed`: 流れる速度
+- `noiseStrength`: ノイズの強度
+- `rotatingSpeed`: 回転速度
+- `uvScaleX`, `uvScaleY`: UVスケール
+- `blending`: 1=NormalBlending, 2=AdditiveBlending
+- `startY`, `endY`: Y軸方向のグラデーション範囲
+- `gaussian`: ガウシアンフィルター有効化
 
 ## ライセンス
 
 MIT
+
+## クレジット
+
+元となったNewtypeエフェクト: [sawa-zen/portfolio](https://github.com/sawa-zen/portfolio)
