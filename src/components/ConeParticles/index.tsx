@@ -68,7 +68,7 @@ export const ConeParticles: React.FC<ConeParticlesProps> = ({
   return (
     <group ref={groupRef} position={position} scale={scale}>
       <mesh ref={meshRef} rotation={[0, Math.PI / 2, -Math.PI / 2]}>
-        <coneGeometry args={[10, 50, 32, 10, true]} />
+        <coneGeometry args={[10, 50, 16, 8, true]} />
         <shaderMaterial
           vertexShader={vertexShader}
           fragmentShader={fragmentShader}

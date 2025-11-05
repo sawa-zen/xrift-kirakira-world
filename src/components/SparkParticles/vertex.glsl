@@ -32,8 +32,8 @@ void main() {
 
   // Sine波でサイズを変動させる（周期2秒、振幅は基本サイズの30%）
   // uv.xを使用して各パーティクルの位相をずらす
-  float phase = uv.x * 2.0 * 3.14159; // 0-1の値を0-2πにマッピング
-  float sineWave = sin(uTime * 3.14159 * 10.0 + phase); // 位相をオフセット
+  float phase = uv.x * 6.28318; // 0-1の値を0-2πにマッピング（元: 2.0 * 3.14159 → 定数化）
+  float sineWave = sin(uTime * 31.4159 + phase); // 位相をオフセット（元: 3.14159 * 10.0 → 定数化）
   float sizeVariation = baseSize * 1.0; // 30%の振幅
   float finalSize = baseSize + sineWave * sizeVariation;
 

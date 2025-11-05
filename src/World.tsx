@@ -44,13 +44,13 @@ export const World: React.FC<WorldProps> = ({
           />
         ))}
 
+        {/* DotParticles - ドットパーティクル (Newtype) */}
+        <DotParticles />
+
+        {/* SparkParticles - スパークパーティクル (Newtype) */}
+        <SparkParticles baseColor={theme.spark} />
       </group>
 
-      {/* DotParticles - ドットパーティクル (Newtype) */}
-      <DotParticles />
-
-      {/* SparkParticles - スパークパーティクル (Newtype) */}
-      <SparkParticles baseColor={theme.spark} />
 
       {/* 透明な床 - 歩行用（カメラ位置 [0, 0, 0] 基準） */}
       <RigidBody type="fixed" colliders="cuboid">
