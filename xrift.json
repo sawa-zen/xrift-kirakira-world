@@ -2,8 +2,8 @@
   "world": {
     "distDir": "./dist",
     "buildCommand": "npm run build",
-    "title": "マチュのキラキラ",
-    "description": "ジークアクスのマチュのキラキラを再現したワールドです。",
+    "title": "マチュのキラキラ✨️",
+    "description": "機動戦士Gundam GQuuuuuuXのマチュのキラキラを再現したワールドです。",
     "thumbnailPath": "thumbnail.png",
     "ignore": [
       "**/.DS_Store",

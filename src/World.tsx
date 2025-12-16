@@ -22,7 +22,7 @@ export const World: React.FC<WorldProps> = ({
     <group position={position} scale={scale}>
       {/* カメラ位置を [0, 0, 1] に固定できないため、ワールド全体を z=-1 に移動 */}
       {/* アバターの目線の高さ（約1.6m）を考慮して y=1.6 に配置 */}
-      <group position={[0, 1.6, -30]}>
+      <group position={[0, 1.6, -32]}>
         {/* Background - グラデーション背景 (Newtype) */}
         <Background {...theme.background} />
         {/* ConeParticles - コーンレイヤー (Newtype) - 8層構成 */}
@@ -51,6 +51,17 @@ export const World: React.FC<WorldProps> = ({
         <SparkParticles baseColor={theme.spark} />
       </group>
 
+
+      {/* 前方からの黄色いスポットライト（シーン奥から手前へ） */}
+      <spotLight
+        position={[0, 1.6, -50]}
+        target-position={[0, 1.6, 0]}
+        color="#ffdd00"
+        intensity={1000}
+        angle={Math.PI / 4}
+        penumbra={0.2}
+        distance={100}
+      />
 
       {/* 透明な床 - 歩行用（カメラ位置 [0, 0, 0] 基準） */}
       <RigidBody type="fixed" colliders="cuboid">

@@ -76,8 +76,8 @@ export const ConeParticles: React.FC<ConeParticlesProps> = ({
           transparent
           blending={blendingMode}
           side={BackSide}
+          depthTest={true}
           depthWrite={false}
-          depthTest={false}
         />
       </mesh>
     </group>
